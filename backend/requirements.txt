@@ -1,0 +1,15 @@
+fastapi>=0.110.0
+uvicorn[standard]>=0.28.0
+pydantic>=2.6.0
+pydantic-settings>=2.2.0
+SQLAlchemy>=2.0.25
+numpy>=1.26.0
+scikit-learn>=1.4.0
+joblib>=1.3.0
+# Opsional: backend LightGBM untuk quantile regression (fallback otomatis ke scikit-learn)
+lightgbm>=4.3.0
+# Opsional: driver PostgreSQL/PostGIS
+# psycopg[binary]>=3.1
+# Testing
+httpx>=0.27.0
+pytest>=8.0.0
