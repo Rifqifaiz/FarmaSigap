@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FarmaSigap · AI-Driven Disaster Medicine Intelligence</title>
+  
+  <!-- Modern Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- MapLibre GL: globe bumi 3D & peta Indonesia (tanpa API key) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@5.8.0/dist/maplibre-gl.css" />
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- MapLibre GL JS -->
+  <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@5.8.0/dist/maplibre-gl.js"></script>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="futuristic-theme" data-theme="dark">
+
+  <!-- Background Animated Wave Canvas -->
+  <canvas id="cyber-waves-canvas" class="cyber-waves"></canvas>
+
+  <!-- ==================== TOP NAVIGATION BAR ==================== -->
+  <header class="navbar-futuristic">
+    <div class="nav-container">
+      <div class="nav-left">
+        <a href="#hero" class="brand-link" onclick="switchMainView('home')">
+          <div class="brand-icon-hex">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+          </div>
+          <div class="brand-titles">
+            <span class="brand-core">Farma<span class="brand-glow">Sigap</span></span>
+            <span class="brand-tagline">Disaster Medicine AI</span>
+          </div>
+        </a>
+      </div>
+
+      <nav class="nav-center">
+        <a href="#hero" class="nav-item active" onclick="switchMainView('home')">Beranda</a>
+        <a href="#pillars" class="nav-item" onclick="switchMainView('home')">3 Pilar Inovasi</a>
+        <a href="#workflow" class="nav-item" onclick="switchMainView('home')">Alur Kerja</a>
+        <a href="#command-center" class="nav-item highlight" onclick="switchMainView('command-center')">Dasbor IFK Live</a>
+        <a href="#posko-section" class="nav-item" onclick="switchMainView('posko')">Kit Posko</a>
+        <a href="#donation-section" class="nav-item" onclick="switchMainView('donation')">Donasi Obat</a>
+      </nav>
+
+      <div class="nav-right">
+        <!-- Theme Toggle: Light / Dark Mode -->
+        <button id="theme-toggle-btn" class="theme-switch-btn" onclick="toggleTheme()" title="Ubah Mode Tampilan (Terang / Gelap)">
+          <span class="theme-icon" id="theme-icon">🌙</span>
+          <span class="theme-label" id="theme-label">Mode Gelap</span>
+        </button>
+
+        <div class="telemetry-pill">
+          <span class="pulse-indicator red"></span>
+          <span class="telemetry-txt">SIAGA KARHUTLA · PM2.5: <b>184.5</b></span>
+        </div>
+
+        <button class="btn-glow-blue" onclick="switchMainView('command-center')">
+          <span>Buka Dasbor IFK</span>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== VIEW 1: HOMEPAGE (LANDING PAGE) ==================== -->
+  <div id="view-home" class="page-view active">
+    
+    <!-- HERO SECTION -->
+    <section id="hero" class="hero-section">
+      <div class="hero-container">
+        
+        <!-- Left Content -->
+        <div class="hero-left">
+          <div class="hero-badge">
+            <span class="badge-dot"></span>
+            <span class="badge-text">TKT-3 PROTOTIPE · FAKULTAS FARMASI UNIVERSITAS INDONESIA</span>
+          </div>
+
+          <h1 class="hero-title">
+            Platform Prediktif AI untuk <br>
+            Antisipasi & Distribusi <br>
+            <span class="gradient-text">Obat Bencana Indonesia</span>
+          </h1>
+
+          <p class="hero-description">
+            Memindahkan pengelolaan logistik obat dari pola reaktif ke antisipatif sebelum lonjakan kasus memuncak. Menghubungkan jaringan rantai pasok farmasi dari pusat hingga puskesmas terpencil di wilayah bencana.
+          </p>
+
+          <div class="hero-cta-group">
+            <button class="btn-cta-primary" onclick="switchMainView('command-center')">
+              <span>Masuk Command Center IFK</span>
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+            <a href="#pillars" class="btn-cta-secondary">
+              Pelajari 3 Pilar Inovasi
+            </a>
+          </div>
+
+          <!-- Quick Metrics Ribbon (Simpel, Bersih, Rapi) -->
+          <div class="hero-metrics-ribbon">
+            <div class="metric-block">
+              <span class="metric-val text-blue">165.747</span>
+              <span class="metric-lbl">Kasus ISPA Karhutla Kalbar</span>
+            </div>
+            <div class="metric-divider"></div>
+            <div class="metric-block">
+              <span class="metric-val text-mint">14.8%</span>
+              <span class="metric-lbl">Galat Prediksi AI (MAPE)</span>
+            </div>
+            <div class="metric-divider"></div>
+            <div class="metric-block">
+              <span class="metric-val text-orange">3 Hari</span>
+              <span class="metric-lbl">Waktu Deteksi Lebih Awal</span>
+            </div>
+            <div class="metric-divider"></div>
+            <div class="metric-block">
+              <span class="metric-val text-accent">514 Kab/Kota</span>
+              <span class="metric-lbl">Jaringan Nasional Terhubung</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Visual: Interactive Connected 3D Sphere & Indonesia Network -->
+        <div class="hero-right">
+          <div class="globe-container">
+            <div class="globe-atmosphere"></div>
+            <!-- Globe bumi 3D interaktif (citra satelit), berpusat di Indonesia -->
+            <div class="earth-globe-wrap">
+              <div class="orbit-ring ring-1"></div>
+              <div class="orbit-ring ring-2"></div>
+              <div class="orbit-ring ring-3"></div>
+              <div id="hero-globe" class="earth-globe" role="img" aria-label="Globe bumi interaktif yang menyorot jaringan obat bencana Indonesia"></div>
+            </div>
+
+            <!-- Floating Data Widgets over Globe -->
+            <div class="floating-telemetry-card top-left">
+              <div class="card-icon blue">⚡</div>
+              <div>
+                <small>SINYAL BAHAYA AKTIF</small>
+                <strong>PM2.5: 184.5 µg/m³</strong>
+              </div>
+            </div>
+
+            <div class="floating-telemetry-card bottom-right">
+              <div class="card-icon mint">✓</div>
+              <div>
+                <small>REDISTRIBUSI OPTIMAL</small>
+                <strong>+60 Salbutamol Inhaler</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION: 3 PILAR INOVASI -->
+    <section id="pillars" class="pillars-section">
+      <div class="section-container">
+        <div class="section-header">
+          <span class="section-tag">ARSITEKTUR INTELIJEN</span>
+          <h2 class="section-title">Tiga Pilar Solusi <span class="gradient-text">FarmaSigap</span></h2>
+          <p class="section-subtitle">Mengintegrasikan data bahaya lingkungan terbuka, model machine learning deret waktu, dan basis pengetahuan kefarmasian resmi.</p>
+        </div>
+
+        <div class="pillars-grid">
+          <!-- Pilar 1 -->
+          <div class="pillar-card">
+            <div class="card-glow blue"></div>
+            <div class="pillar-icon-box blue">
+              <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/><path d="m14.83 14.83 4.24 4.24"/><path d="m9.17 14.83-4.24 4.24"/></svg>
+            </div>
+            <h3>1. Pemicu Berbasis Bahaya</h3>
+            <span class="pillar-subtitle">Hazard-to-Drug Engine</span>
+            <p>
+              Mengonsumsi otomatis data titik panas (NASA FIRMS), kualitas udara PM2.5/ISPU (BMKG & SIPONGI), serta status BNPB secara harian. Sinyal bahaya langsung memicu kalkulasi obat sebelum kasus di puskesmas melonjak.
+            </p>
+            <div class="card-footer-pill">
+              <span>● Deteksi 7–14 hari lebih dini</span>
+            </div>
+          </div>
+
+          <!-- Pilar 2 -->
+          <div class="pillar-card featured">
+            <div class="card-glow mint"></div>
+            <div class="pillar-icon-box mint">
+              <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+            </div>
+            <h3>2. Model Prediksi AI Kuantil</h3>
+            <span class="pillar-subtitle">LightGBM Gradient Boosting</span>
+            <p>
+              Memperkirakan kunjungan ISPA 1–3 minggu ke depan dengan batas bawah (P10), nilai median (P50), dan batas atas (P90). Batas atas P90 memastikan stok pengaman (safety stock) siap menghadapi lonjakan terburuk.
+            </p>
+            <div class="card-footer-pill mint">
+              <span>● MAPE 14.8% · Interval Kepercayaan 80%</span>
+            </div>
+          </div>
+
+          <!-- Pilar 3 -->
+          <div class="pillar-card">
+            <div class="card-glow white"></div>
+            <div class="pillar-icon-box white">
+              <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <h3>3. Basis Farmasi & Apoteker</h3>
+            <span class="pillar-subtitle">Human-in-the-Loop & DOEN</span>
+            <p>
+              Menerjemahkan prediksi penyakit menjadi nama obat, dosis, dan alternatif terapi sesuai Fornas, DOEN, dan WHO IEHK. Rekomendasi redistribusi tetap diputuskan dan disetujui resmi oleh Apoteker IFK dengan jejak audit.
+            </p>
+            <div class="card-footer-pill">
+              <span>● Kepatuhan Regulasi & Rasionalitas Obat</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION: WORKFLOW (OUR PROCESS) -->
+    <section id="workflow" class="workflow-section">
+      <div class="section-container">
+        <div class="section-header">
+          <span class="section-tag">ALUR KERJA SISTEM</span>
+          <h2 class="section-title">Dari Sinyal Bahaya ke <span class="gradient-text">Obat Tersedia Tepat Waktu</span></h2>
+        </div>
+
+        <div class="workflow-steps">
+          <div class="step-card">
+            <div class="step-number">01</div>
+            <h4>Input Data Multidimensi</h4>
+            <p>Titik panas, sensor PM2.5, profil kelompok rentan (balita/lansia), dan data stok terkini faskes.</p>
+          </div>
+          <div class="step-connector"></div>
+
+          <div class="step-card">
+            <div class="step-number">02</div>
+            <h4>Mesin Prediksi AI</h4>
+            <p>Algoritma regresi kuantil menghasilkan estimasi lonjakan kasus ISPA 14 hari ke depan (P10–P90).</p>
+          </div>
+          <div class="step-connector"></div>
+
+          <div class="step-card">
+            <div class="step-number">03</div>
+            <h4>Perhitungan Hari Stok</h4>
+            <p>Membandingkan stok faskes dengan proyeksi konsumsi dan waktu kirim. Puskesmas kritis ditandai merah.</p>
+          </div>
+          <div class="step-connector"></div>
+
+          <div class="step-card">
+            <div class="step-number">04</div>
+            <h4>Eksekusi Mutasi Obat</h4>
+            <p>Usulan redistribusi otomatis dari faskes surplus. Apoteker IFK meninjau dan menyetujui secara digital.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION CTA BANNER -->
+    <section class="bottom-cta-section">
+      <div class="section-container">
+        <div class="cta-box">
+          <div class="cta-content">
+            <h3>Siap Meninjau Simulasi Lapangan Kalimantan Barat?</h3>
+            <p>Akses live dasbor Kabupaten Kubu Raya dengan data spasial 7 puskesmas, tren prediksi ISPA, dan mesin redistribusi obat.</p>
+          </div>
+          <button class="btn-cta-primary large" onclick="switchMainView('command-center')">
+            Buka Dasbor IFK Sekarang ➜
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ==================== VIEW 2: LIVE COMMAND CENTER (DASBOR IFK) ==================== -->
+  <div id="view-command-center" class="page-view">
+    
+    <div class="command-container">
+      
+      <!-- Command Subheader with Detail Level Control -->
+      <div class="command-subheader">
+        <div class="sub-left">
+          <button class="btn-back-home" onclick="switchMainView('home')">
+            ← Kembali ke Beranda
+          </button>
+          <div class="command-title-wrap">
+            <h2>Dasbor Operasional Farmasi Bencana</h2>
+            <span class="region-chip">Jaringan Distribusi Obat Terhubung · Fokus Karhutla Kalbar</span>
+          </div>
+        </div>
+
+        <div class="sub-right">
+          <!-- Toggle Simpel vs Rincian Lengkap (Progressive Disclosure) -->
+          <div class="view-mode-toggle">
+            <button id="btn-mode-simple" class="mode-btn active" onclick="setDetailMode('simple')">
+              <span>Ringkas</span>
+            </button>
+            <button id="btn-mode-detail" class="mode-btn" onclick="setDetailMode('detail')">
+              <span>Lengkap</span>
+            </button>
+          </div>
+
+          <div class="backend-pill">
+            <span class="pulse-indicator mint"></span>
+            <span id="backend-status-pill">Backend: Standalone (Data Sintetis)</span>
+          </div>
+          <div class="pharmacist-tag">
+            <span>Apt. Rian Pratama, S.Farm (IFK)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2x2 Grid Layout Sesuai Gambar 2 Mockup Proposal -->
+      <div class="command-grid-2x2">
+        
+        <!-- PANEL 1: PETA GEOSPASIAL INDONESIA TERHUBUNG (KIRI ATAS) -->
+        <div class="cyber-panel panel-map">
+          <div class="panel-head">
+            <div class="head-title">
+              <span class="panel-code">GEOSPATIAL-01</span>
+              <h3 id="map-header-title">Peta Jaringan Logistik Obat Terhubung</h3>
+            </div>
+            
+            <!-- Map View Switcher: Indonesia vs Kubu Raya Focus -->
+            <div class="map-view-switch">
+              <button class="map-toggle-btn" data-map-mode="globe" onclick="setMapViewMode('globe')">
+                🌏 Globe
+              </button>
+              <button class="map-toggle-btn active" data-map-mode="indonesia" onclick="setMapViewMode('indonesia')">
+                🇮🇩 Indonesia Terhubung
+              </button>
+              <button class="map-toggle-btn" data-map-mode="local" onclick="setMapViewMode('local')">
+                📍 Fokus Kubu Raya (7 PKM)
+              </button>
+            </div>
+          </div>
+
+          <div class="panel-content map-wrap">
+            <div id="district-map" class="map-futuristic"></div>
+            
+            <!-- Map Overlay HUD -->
+            <div class="map-hud-overlay">
+              <div class="hud-item">
+                <span id="hud-mode-title">Jaringan Nasional:</span>
+                <strong class="text-blue" id="hud-network-desc">6 Koridor Logistik Antar-Pulau Aktif</strong>
+              </div>
+              <div class="hud-item">
+                <span>Puskesmas Kritis Terpantau:</span>
+                <strong class="text-red">Sungai Raya & Ambawang</strong>
+              </div>
+              <div class="hud-item">
+                <span>Hub Depo Suplai Cadangan:</span>
+                <strong class="text-mint">Jakarta & Surabaya</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel-foot map-foot-controls">
+            <div class="head-legend">
+              <span class="legend-badge red">● Kritis (&lt; 4 hr)</span>
+              <span class="legend-badge yellow">● Waspada (&lt; 11 hr)</span>
+              <span class="legend-badge green">● Aman / Surplus</span>
+              <span class="legend-badge blue">━━ Koridor Terhubung</span>
+              <span class="legend-badge fire">🔥 Titik Panas</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- PANEL 2: TABEL OBAT PRIORITAS BENCANA (KANAN ATAS) -->
+        <div class="cyber-panel panel-table">
+          <div class="panel-head">
+            <div class="head-title">
+              <span class="panel-code">FORMULARY-02</span>
+              <h3>Obat Prioritas Karhutla · PKM Sungai Raya (PKM A)</h3>
+            </div>
+            <div class="lead-time-tag">
+              Lead Time IFK: <b>4 Hari</b>
+            </div>
+          </div>
+
+          <div class="panel-content table-scroll">
+            <table class="cyber-table">
+              <thead>
+                <tr>
+                  <th>Obat & Sediaan</th>
+                  <th class="text-right">Butuh (14 hr)</th>
+                  <th class="text-right">Stok Riil</th>
+                  <th class="text-center">Hari Stok</th>
+                  <th class="text-center">Status</th>
+                  <th class="col-detail-only">Rekomendasi Tindakan Farmasi</th>
+                </tr>
+              </thead>
+              <tbody id="medicine-tbody">
+                <!-- Injected via JavaScript -->
+              </tbody>
+            </table>
+          </div>
+
+          <div class="panel-foot flex-between">
+            <span>ℹ️ Formula: <code>Hari Stok = Stok ÷ Prediksi Konsumsi</code></span>
+            <button class="btn-text-link" onclick="toggleDetailMode()">
+              <span id="detail-toggle-label">Buka Rincian Lengkap ▾</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- PANEL 3: PREDIKSI AI KURVA ISPA (KIRI BAWAH) -->
+        <div class="cyber-panel panel-chart">
+          <div class="panel-head">
+            <div class="head-title">
+              <span class="panel-code">AI-FORECAST-03</span>
+              <h3>Model Prediksi Kunjungan ISPA Mingguan (LightGBM)</h3>
+            </div>
+            <div class="model-accuracy-badge">
+              MAPE: <b>14.8%</b> · P10-P90
+            </div>
+          </div>
+
+          <div class="panel-content chart-container">
+            <canvas id="ispa-chart"></canvas>
+          </div>
+
+          <!-- Extended Feature Importance drawer (shown in detail mode) -->
+          <div id="chart-extended-details" class="chart-detail-box" style="display: none;">
+            <div class="detail-grid">
+              <div class="detail-item">
+                <small>Fitur Utama Model:</small>
+                <span>PM2.5 Lag 0–14 Hari (Bobot 38%)</span>
+              </div>
+              <div class="detail-item">
+                <small>Cluster Titik Panas:</small>
+                <span>NASA FIRMS 25 km (Bobot 24%)</span>
+              </div>
+              <div class="detail-item">
+                <small>Kelompok Rentan:</small>
+                <span>Balita & Lansia (Bobot 21%)</span>
+              </div>
+              <div class="detail-item">
+                <small>Interval Prediksi:</small>
+                <span>80% Cakupan (P10–P90)</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel-foot chart-legend-foot">
+            <span class="chart-key teal-line"></span> Kasus Aktual
+            <span class="chart-key dashed-line"></span> Prediksi Median (P50)
+            <span class="chart-key shade-area"></span> Rentang P10–P90 (Safety Stock)
+          </div>
+        </div>
+
+        <!-- PANEL 4: USULAN REDISTRIBUSI OBAT OTOMATIS (KANAN BAWAH) -->
+        <div class="cyber-panel panel-redistribution">
+          <div class="panel-head">
+            <div class="head-title">
+              <span class="panel-code">DISPATCH-04</span>
+              <h3>Usulan Redistribusi Obat Antarfasilitas</h3>
+            </div>
+            <span class="pharmacist-authority-badge">Otoritas Apoteker IFK</span>
+          </div>
+
+          <div class="panel-content redist-content">
+            <div class="mutation-card" id="mutation-card-1">
+              <div class="mutation-route-bar">
+                <div class="facility from">
+                  <span class="fac-chip surplus">SURPLUS</span>
+                  <h4>PKM Rasau Jaya (PKM B)</h4>
+                  <small>Buffer aman 45 hari (+350 canister)</small>
+                </div>
+                <div class="mutation-connector">
+                  <span class="distance-badge">12.4 km · ±4 Jam</span>
+                  <div class="arrow-glow">➜</div>
+                </div>
+                <div class="facility to">
+                  <span class="fac-chip deficit">KRITIS</span>
+                  <h4>PKM Sungai Raya (PKM A)</h4>
+                  <small>Sisa stok 3 hari (Kritis stock-out)</small>
+                </div>
+              </div>
+
+              <div class="drug-allocation-box">
+                <div>
+                  <span class="drug-name-big">Salbutamol Inhaler 100 mcg</span>
+                  <span class="drug-sub">Bronkodilator Pelega Asma Akut Karhutla</span>
+                </div>
+                <div class="drug-qty-badge">
+                  <span>Alokasi:</span>
+                  <strong>60 Canister</strong>
+                </div>
+              </div>
+
+              <!-- Collapsible Clinical Rationale -->
+              <div class="clinical-justification">
+                <strong>Rasionalisasi Farmasi & Logistik:</strong>
+                <p id="rationale-summary">
+                  Mencegah kekosongan obat 3 hari sebelum lonjakan asap memuncak, tanpa menunggu pengadaan baru IFK (lead time 4 hari).
+                </p>
+                <div id="rationale-extended" style="display: none; margin-top: 6px;">
+                  <small style="color: var(--color-white-dim); line-height: 1.5; display: block;">
+                    Rute distribusi menggunakan jalur darat Jl. Arteri Supadio dengan waktu tempuh 4 jam. Alokasi 60 unit tidak mengganggu stok penyangga Puskesmas Rasau Jaya yang masih memiliki cadangan 290 unit untuk 30 hari ke depan.
+                  </small>
+                </div>
+              </div>
+
+              <div class="approval-buttons">
+                <button class="btn-approve" id="btn-approve-mutation" onclick="handleRedistributionAction('REDIST-2026-001', 'approve')">
+                  ✓ Setujui Mutasi (Apoteker IFK)
+                </button>
+                <button class="btn-reject" id="btn-reject-mutation" onclick="handleRedistributionAction('REDIST-2026-001', 'reject')">
+                  ✕ Tolak / Sesuaikan
+                </button>
+              </div>
+              <small class="audit-trail-text">🔒 Keputusan mutasi dicatat resmi dalam audit log atas nama Apt. Rian Pratama, S.Farm.</small>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ==================== VIEW 3: KALKULATOR KIT POSKO ==================== -->
+  <div id="view-posko" class="page-view">
+    <div class="subpage-container">
+      <div class="subpage-header">
+        <button class="btn-back-home" onclick="switchMainView('home')">← Kembali ke Beranda</button>
+        <h2>Kalkulator Kit Posko Pengungsian Bencana</h2>
+        <p>Kuantifikasi perbekalan farmasi posko pengungsian diadaptasi dari standar WHO Interagency Emergency Health Kit (IEHK 2024).</p>
+      </div>
+
+      <div class="posko-two-col">
+        <div class="posko-form-card">
+          <h3>Parameter Pengungsi</h3>
+          <form class="posko-inputs" onsubmit="event.preventDefault(); calculatePoskoKit();">
+            <div class="field-group">
+              <label>Jenis Bencana:</label>
+              <select id="posko-disaster" class="cyber-input" onchange="calculatePoskoKit()">
+                <option value="karhutla" selected>Kebakaran Hutan & Lahan (Karhutla/Asap)</option>
+                <option value="banjir">Banjir & Cuaca Ekstrem</option>
+                <option value="gempa">Gempa Bumi & Trauma Fisik</option>
+              </select>
+            </div>
+
+            <div class="field-group">
+              <label>Total Pengungsi (Jiwa):</label>
+              <input type="number" id="posko-total" class="cyber-input" value="500" min="50" step="50" oninput="calculatePoskoKit()">
+            </div>
+
+            <div class="field-group">
+              <label>Estimasi Lama Tinggal (Hari):</label>
+              <input type="number" id="posko-days" class="cyber-input" value="14" min="3" max="60" oninput="calculatePoskoKit()">
+            </div>
+
+            <div class="field-group">
+              <div class="label-with-val">
+                <label>Proporsi Balita (%):</label>
+                <span id="balita-val" class="slider-val">15%</span>
+              </div>
+              <input type="range" id="posko-balita" min="5" max="30" value="15" oninput="document.getElementById('balita-val').innerText = this.value + '%'; calculatePoskoKit();">
+            </div>
+
+            <div class="field-group">
+              <div class="label-with-val">
+                <label>Proporsi Lansia (%):</label>
+                <span id="elderly-val" class="slider-val">12%</span>
+              </div>
+              <input type="range" id="posko-elderly" min="5" max="30" value="12" oninput="document.getElementById('elderly-val').innerText = this.value + '%'; calculatePoskoKit();">
+            </div>
+
+            <button type="button" class="btn-glow-blue btn-full" onclick="calculatePoskoKit()">Hitung Kuantifikasi Kit</button>
+          </form>
+        </div>
+
+        <div class="posko-output-card">
+          <div class="card-head-row">
+            <h3>Daftar Kuantifikasi Kit Posko</h3>
+            <button class="btn-outline-small" onclick="window.print()">Cetak Rincian Kit (PDF)</button>
+          </div>
+          <table class="cyber-table">
+            <thead>
+              <tr>
+                <th>Nama Obat / Perbekalan</th>
+                <th>Kategori</th>
+                <th class="text-right">Jumlah Kebutuhan</th>
+                <th>Satuan</th>
+                <th>Catatan Klinis</th>
+              </tr>
+            </thead>
+            <tbody id="posko-kit-tbody">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== VIEW 4: PENCOCOK DONASI ==================== -->
+  <div id="view-donation" class="page-view">
+    <div class="subpage-container">
+      <div class="subpage-header">
+        <button class="btn-back-home" onclick="switchMainView('home')">← Kembali ke Beranda</button>
+        <h2>Pencocok & Validasi Donasi Obat Bencana</h2>
+        <p>Memfilter donasi obat berdasarkan Formularium Darurat Aktif dan Pedoman Donasi Obat WHO (Batas ED minimal 6 bulan, pencegahan obat kadaluwarsa & antibiotik irasional).</p>
+      </div>
+
+      <div class="donation-card-full">
+        <div class="donation-toolbar">
+          <div>
+            <strong>Status Formularium:</strong>
+            <span class="badge-status hijau">Formularium Darurat Karhutla Aktif</span>
+          </div>
+          <button class="btn-glow-blue" onclick="addDonationRow()">+ Verifikasi Obat Donasi Baru</button>
+        </div>
+
+        <table class="cyber-table">
+          <thead>
+            <tr>
+              <th>Nama Obat Donasi</th>
+              <th>Jumlah</th>
+              <th>Satuan</th>
+              <th>Tanggal Kedaluwarsa</th>
+              <th>Asal Donatur</th>
+              <th>Status ED (WHO)</th>
+              <th>Kesesuaian Bencana</th>
+              <th>Rekomendasi Apoteker</th>
+            </tr>
+          </thead>
+          <tbody id="donation-tbody">
+            <!-- Dynamically populated -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification Toast -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
