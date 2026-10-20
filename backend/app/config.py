@@ -36,7 +36,7 @@ class Settings(BaseSettings):
     active_district: str = "Kubu Raya"
     yellow_buffer_days: int = 7           # KUNING jika hari stok < lead time + buffer ini
     planning_horizon_days: int = 14       # horizon kebutuhan obat (2 minggu prediksi P90)
-    donor_reserve_days: int = 14          # cadangan tambahan yang tetap disimpan PKM donor
+    donor_reserve_days: int = 14          # cadangan tambahan yang tetap disimpan Puskesmas donor
     courier_speed_kmh: float = 30.0
     handling_hours: float = 2.0
 

@@ -58,7 +58,7 @@ class MedicineStock(BaseModel):
     priority: bool
     restricted: bool
     current_stock: int
-    predicted_cases_p90: float = Field(description="Prediksi kasus P90 PKM selama horizon perencanaan")
+    predicted_cases_p90: float = Field(description="Prediksi kasus P90 Puskesmas selama horizon perencanaan")
     proportion_treated: float
     units_per_case: float
     need_14_days: int = Field(description="Kebutuhan = kasus P90 × proporsi × unit per kasus")
@@ -86,7 +86,7 @@ class InventoryResponse(BaseModel):
 
 class StockUpdateRequest(BaseModel):
     current_stock: int = Field(..., ge=0)
-    updated_by: str = Field(..., min_length=3, examples=["Apt. Rian Pratama, S.Farm"])
+    updated_by: str = Field(..., min_length=3, examples=["Apt. Mohammad Rifqi Faiz"])
     reason: Optional[str] = Field(None, examples=["Stock opname mingguan"])
 
 
@@ -204,7 +204,7 @@ class RedistributionSuggestion(BaseModel):
 class RedistributionActionRequest(BaseModel):
     suggestion_id: str = Field(..., examples=["REDIST-2026-001"])
     action: Literal["approve", "reject"]
-    pharmacist_name: str = Field(..., min_length=3, examples=["Apt. Rian Pratama, S.Farm"])
+    pharmacist_name: str = Field(..., min_length=3, examples=["Apt. Mohammad Rifqi Faiz"])
     reason: Optional[str] = Field(None, description="Alasan keputusan (wajib untuk reject)")
     notes: Optional[str] = Field(None, description="Alias lama untuk `reason`")
 

@@ -32,10 +32,10 @@ const FALLBACK_DATA = {
   // Jaringan Logistik Nasional Indonesia Terhubung
   nationalHubs: [
     { id: "HUB-JKT", name: "Depo Pusat Kemenkes & HEOC", city: "DKI Jakarta", lat: -6.2088, lng: 106.8456, type: "pusat", status: "Depo Cadangan Nasional" },
-    { id: "HUB-PNK", name: "IFK Kubu Raya / Pontianak", city: "Kalimantan Barat", lat: -0.0682, lng: 109.3871, type: "bencana", status: "SIAGA 1 (Karhutla Aktif)" },
-    { id: "HUB-PKU", name: "IFK Pekanbaru", city: "Riau", lat: 0.5071, lng: 101.4478, type: "waspada", status: "SIAGA 2 (Kabut Asap Ringan)" },
-    { id: "HUB-PLM", name: "IFK Palembang", city: "Sumatera Selatan", lat: -2.9761, lng: 104.7754, type: "waspada", status: "SIAGA 2 (Hotspot Lahan Gambut)" },
-    { id: "HUB-BDJ", name: "IFK Banjarmasin", city: "Kalimantan Selatan", lat: -3.3194, lng: 114.5908, type: "waspada", status: "SIAGA 2 (Pantauan Udara)" },
+    { id: "HUB-PNK", name: "Instalasi Farmasi Kubu Raya / Pontianak", city: "Kalimantan Barat", lat: -0.0682, lng: 109.3871, type: "bencana", status: "SIAGA 1 (Karhutla Aktif)" },
+    { id: "HUB-PKU", name: "Instalasi Farmasi Pekanbaru", city: "Riau", lat: 0.5071, lng: 101.4478, type: "waspada", status: "SIAGA 2 (Kabut Asap Ringan)" },
+    { id: "HUB-PLM", name: "Instalasi Farmasi Palembang", city: "Sumatera Selatan", lat: -2.9761, lng: 104.7754, type: "waspada", status: "SIAGA 2 (Hotspot Lahan Gambut)" },
+    { id: "HUB-BDJ", name: "Instalasi Farmasi Banjarmasin", city: "Kalimantan Selatan", lat: -3.3194, lng: 114.5908, type: "waspada", status: "SIAGA 2 (Pantauan Udara)" },
     { id: "HUB-SUB", name: "Depo Logistik Buffer Regional", city: "Surabaya, Jawa Timur", lat: -7.2575, lng: 112.7521, type: "buffer", status: "Buffer Stok Siap Mobilisasi" },
     { id: "HUB-MKS", name: "Depo Farmasi Terpadu", city: "Makassar, Sulawesi Selatan", lat: -5.1477, lng: 119.4327, type: "buffer", status: "Depo Penyangga Wilayah Timur" }
   ],
@@ -45,7 +45,7 @@ const FALLBACK_DATA = {
     { lat: -0.185, lng: 109.382, name: "Titik Panas Lahan Rasau Jaya" }
   ],
   medicines: [
-    { name: "Salbutamol Inhaler 100 mcg", form: "Canister 200 dosis", need14: 180, stock: 40, days: 3.1, status: "merah", action: "Mutasi segera dari PKM Rasau Jaya (Surplus)" },
+    { name: "Salbutamol Inhaler 100 mcg", form: "Canister 200 dosis", need14: 180, stock: 40, days: 3.1, status: "merah", action: "Mutasi segera dari Puskesmas Rasau Jaya (Surplus)" },
     { name: "Parasetamol Tablet 500 mg", form: "Strip 10 tablet", need14: 2400, stock: 1100, days: 6.4, status: "merah", action: "Pengadaan darurat / redistribusi faskes terdekat" },
     { name: "Air Mata Buatan (Tetes 5 ml)", form: "Botol tetes", need14: 150, stock: 120, days: 11.2, status: "kuning", action: "Pantau harian, kebutuhan iritasi asap meningkat" },
     { name: "Tabung Oksigen Medis 1 m³", form: "Tabung regulator", need14: 12, stock: 9, days: 10.5, status: "kuning", action: "Siagakan di UGD 24 Jam Puskesmas" },
@@ -65,7 +65,7 @@ let mapInstance = null;
 let heroGlobe = null;
 let mapMarkers = [];
 let mapIntroPlayed = false;
-let liveMapData = null; // data PKM & titik panas dari FastAPI bila backend aktif
+let liveMapData = null; // data Puskesmas & titik panas dari FastAPI bila backend aktif
 let currentMapViewMode = "globe"; // "globe", "indonesia", atau "local"
 let ispaChartInstance = null;
 let currentDetailMode = "simple"; // "simple" or "detail"
@@ -686,7 +686,7 @@ window.handleRedistributionAction = async function(id, action) {
       body: JSON.stringify({
         suggestion_id: id,
         action: action,
-        pharmacist_name: "Apt. Rian Pratama, S.Farm"
+        pharmacist_name: "Apt. Mohammad Rifqi Faiz"
       })
     });
   } catch (e) {
@@ -699,7 +699,7 @@ window.handleRedistributionAction = async function(id, action) {
     btnApprove.style.background = "#61dd99";
     btnApprove.style.color = "#060b18";
     btnReject.style.display = "none";
-    showToast("Surat Mutasi Terbit: 60 Canister Salbutamol dikirim ke PKM Sungai Raya.");
+    showToast("Surat Mutasi Terbit: 60 Canister Salbutamol dikirim ke Puskesmas Sungai Raya.");
   } else {
     btnReject.disabled = true;
     btnReject.innerText = "Ditolak oleh Apoteker";
@@ -839,7 +839,7 @@ function initDonationRows() {
       <td>Donatur Yayasan ABC</td>
       <td><span class="badge-status hijau">AMAN</span></td>
       <td><span class="badge-status merah">TIDAK SESUAI</span></td>
-      <td style="color: var(--status-red); font-size: 11px;">PERINGATAN: ISPA akibat asap karhutla bukan indikasi antibiotik rutin (Rasionalitas Obat). Simpan di IFK.</td>
+      <td style="color: var(--status-red); font-size: 11px;">PERINGATAN: ISPA akibat asap karhutla bukan indikasi antibiotik rutin (Rasionalitas Obat). Simpan di Instalasi Farmasi.</td>
     </tr>
     <tr>
       <td><strong>Parasetamol Tablet 500 mg</strong></td>

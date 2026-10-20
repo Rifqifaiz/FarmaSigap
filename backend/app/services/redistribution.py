@@ -1,14 +1,14 @@
 """
 Mesin usulan redistribusi obat (Surplus -> Defisit).
 
-1. Penerima: PKM berstatus MERAH/KUNING, diurutkan dari yang paling kritis.
+1. Penerima: Puskesmas berstatus MERAH/KUNING, diurutkan dari yang paling kritis.
    Kebutuhan = jumlah agar hari stok kembali ke ambang HIJAU (lead time + 7 hari).
-2. Donor: PKM berstatus HIJAU dengan surplus, yaitu stok di atas cadangan yang
+2. Donor: Puskesmas berstatus HIJAU dengan surplus, yaitu stok di atas cadangan yang
    tetap disimpan = konsumsi harian × (lead time donor + 7 + cadangan donor).
 3. Pencocokan greedy: setiap penerima dipasangkan dengan donor terdekat (jarak
    jalan bila tersedia, selain itu haversine × faktor jalan) sampai kebutuhan
    terpenuhi atau surplus habis. Mutasi yang menambah < 1 hari stok dilewati. Sisa kebutuhan dilaporkan sebagai usulan
-   pengadaan darurat ke IFK.
+   pengadaan darurat ke Instalasi Farmasi.
 """
 
 import math
@@ -108,7 +108,7 @@ def generate_suggestions(db: Session, disaster: Optional[str] = None) -> Dict[st
                 don_after = (don["current_stock"] - qty) / don["daily_consumption_forecast"]
                 rationale = (
                     f"{rec['puskesmas_name']} tersisa {rec['days_remaining']:.1f} hari stok {rec['medicine_name']} "
-                    f"({'kritis, di bawah' if rec['status'] == 'merah' else 'waspada, mendekati'} waktu kirim IFK "
+                    f"({'kritis, di bawah' if rec['status'] == 'merah' else 'waspada, mendekati'} waktu kirim Instalasi Farmasi "
                     f"{rec['lead_time_days']} hari). {don['puskesmas_name']} surplus {surplus[donor_id]:,} {rec['unit']} "
                     f"(buffer {don['days_remaining']:.0f} hari). Mutasi {qty:,} {rec['unit']} menaikkan stok penerima "
                     f"menjadi {rec_after:.1f} hari, donor tetap {don_after:.0f} hari (≥ lead time + {buf} + cadangan {reserve} hari)."
@@ -151,7 +151,7 @@ def generate_suggestions(db: Session, disaster: Optional[str] = None) -> Dict[st
                         "unit": rec["unit"],
                         "status": rec["status"],
                         "remaining_need_units": need,
-                        "recommendation": "Tidak ada surplus antarfasilitas yang cukup — ajukan pengadaan/buffer darurat ke IFK.",
+                        "recommendation": "Tidak ada surplus antarfasilitas yang cukup — ajukan pengadaan/buffer darurat ke Instalasi Farmasi.",
                     }
                 )
     db.commit()

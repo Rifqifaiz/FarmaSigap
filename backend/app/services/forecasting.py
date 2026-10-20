@@ -85,14 +85,14 @@ def puskesmas_weight(pkm: Puskesmas) -> float:
 
 def puskesmas_case_share(pkm: Puskesmas, total_weight: float) -> float:
     """
-    Porsi kasus ISPA yang jatuh ke PKM ini. Deret ISPA kabupaten adalah agregat laporan
-    PKM yang dipantau, sehingga dibagi proporsional populasi × bobot paparan asap.
+    Porsi kasus ISPA yang jatuh ke Puskesmas ini. Deret ISPA kabupaten adalah agregat laporan
+    Puskesmas yang dipantau, sehingga dibagi proporsional populasi × bobot paparan asap.
     """
     return puskesmas_weight(pkm) / total_weight if total_weight else 0.0
 
 
 def horizon_p90_cases(forecast: Dict[str, Any], share: float, horizon_days: int) -> float:
-    """Jumlah kasus P90 dalam horizon perencanaan (hari) untuk satu PKM."""
+    """Jumlah kasus P90 dalam horizon perencanaan (hari) untuk satu Puskesmas."""
     total, remaining = 0.0, horizon_days
     for f in forecast["forecasts"]:
         if remaining <= 0:

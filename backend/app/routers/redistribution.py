@@ -49,7 +49,7 @@ def regenerate_suggestions(db: Session = Depends(get_db)) -> Dict[str, Any]:
 @router.post("/action")
 def execute_redistribution_action(payload: RedistributionActionRequest, db: Session = Depends(get_db)) -> Dict[str, Any]:
     """
-    Setujui / tolak usulan mutasi oleh Apoteker IFK. Persetujuan memindahkan stok
+    Setujui / tolak usulan mutasi oleh Apoteker Instalasi Farmasi. Persetujuan memindahkan stok
     donor -> penerima. Setiap keputusan dicatat di audit log (nama apoteker,
     timestamp, alasan). Penolakan wajib menyertakan alasan.
     """

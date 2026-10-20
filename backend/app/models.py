@@ -26,7 +26,7 @@ class Puskesmas(Base):
     lead_time_days: Mapped[int] = mapped_column(Integer)
     population_served: Mapped[int] = mapped_column(Integer)
     vulnerability_score: Mapped[float] = mapped_column(Float, default=0.5)
-    # Bobot paparan asap (dipakai untuk membagi prediksi kasus kabupaten ke tiap PKM)
+    # Bobot paparan asap (dipakai untuk membagi prediksi kasus kabupaten ke tiap Puskesmas)
     smoke_exposure_weight: Mapped[float] = mapped_column(Float, default=1.0)
     description: Mapped[str] = mapped_column(Text, default="")
 
@@ -112,7 +112,7 @@ class ISPAWeeklyCase(Base):
 
 
 class RoadDistance(Base):
-    """Jarak tempuh jalan antar-PKM (jika tidak ada, dipakai haversine × faktor jalan)."""
+    """Jarak tempuh jalan antar-Puskesmas (jika tidak ada, dipakai haversine × faktor jalan)."""
 
     __tablename__ = "road_distances"
     __table_args__ = (UniqueConstraint("from_puskesmas_id", "to_puskesmas_id"),)

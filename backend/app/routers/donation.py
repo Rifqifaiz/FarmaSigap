@@ -75,7 +75,7 @@ def _allocation_text(medicine_id: str, metrics: List[Dict[str, Any]]) -> Optiona
         return None
     needy = sorted((m for m in rows if m["status"] != "hijau"), key=lambda m: (STATUS_ORDER[m["status"]], m["days_remaining"]))
     if not needy:
-        return "Semua puskesmas berstatus aman — simpan di gudang IFK sebagai buffer bencana."
+        return "Semua puskesmas berstatus aman — simpan di gudang Instalasi Farmasi sebagai buffer bencana."
     top = needy[:2]
     parts = [f"{m['puskesmas_name']} ({m['status'].upper()}, sisa {m['days_remaining']:.1f} hari, kurang {m['shortfall_units']:,} {m['unit']}/14 hari)" for m in top]
     return "Alokasikan prioritas ke " + "; ".join(parts) + "."
@@ -112,11 +112,11 @@ def evaluate(items: List[DonationItem], disaster: str, db: Session) -> Dict[str,
             decision = "TOLAK"
             recommendation = (
                 "TOLAK / KONFIRMASI DULU: donasi harus berdasarkan kebutuhan yang dinyatakan (WHO). "
-                "Koordinasikan dengan IFK sebelum diterima agar tidak membebani gudang."
+                "Koordinasikan dengan Instalasi Farmasi sebelum diterima agar tidak membebani gudang."
             )
         elif relevance == "terbatas":
             decision = "TERIMA_BERSYARAT"
-            recommendation = "TERIMA BERSYARAT: simpan di gudang IFK, distribusi hanya dengan resep sesuai indikasi (bukan distribusi massal ke posko)."
+            recommendation = "TERIMA BERSYARAT: simpan di gudang Instalasi Farmasi, distribusi hanya dengan resep sesuai indikasi (bukan distribusi massal ke posko)."
         else:
             decision = "TERIMA" if exp_status == "hijau" else "TERIMA_BERSYARAT"
             recommendation = (

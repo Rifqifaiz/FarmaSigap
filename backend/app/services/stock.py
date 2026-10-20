@@ -49,11 +49,11 @@ def _note(status: str, days: float, lead: int, restricted: bool, disaster: str) 
     buf = settings.yellow_buffer_days
     if status == "merah":
         text = (
-            f"Kritis: stok {days:.1f} hari < waktu kirim {lead} hari. Risiko kekosongan sebelum kiriman IFK tiba — "
+            f"Kritis: stok {days:.1f} hari < waktu kirim {lead} hari. Risiko kekosongan sebelum kiriman Instalasi Farmasi tiba — "
             "ajukan mutasi antarfasilitas / pengadaan darurat."
         )
     elif status == "kuning":
-        text = f"Waspada: stok {days:.1f} hari < lead time + {buf} hari ({lead + buf} hari). Pantau harian & siapkan permintaan ke IFK."
+        text = f"Waspada: stok {days:.1f} hari < lead time + {buf} hari ({lead + buf} hari). Pantau harian & siapkan permintaan ke Instalasi Farmasi."
     elif days >= NO_CONSUMPTION_DAYS:
         text = "Aman: tidak ada konsumsi terprediksi untuk skenario bencana aktif."
     else:

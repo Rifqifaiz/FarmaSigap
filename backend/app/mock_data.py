@@ -42,7 +42,7 @@ PUSKESMAS_LIST: List[Dict[str, Any]] = [
      "description": "Wilayah hulu, akses sungai; stok aman."},
 ]
 
-# Jarak tempuh jalan yang diketahui IFK (km). Pasangan lain diestimasi haversine × faktor jalan.
+# Jarak tempuh jalan yang diketahui Instalasi Farmasi (km). Pasangan lain diestimasi haversine × faktor jalan.
 ROAD_DISTANCES = [("PKM-A", "PKM-B", 12.4), ("PKM-A", "PKM-D", 9.6), ("PKM-B", "PKM-F", 21.8), ("PKM-D", "PKM-F", 28.6)]
 
 
@@ -119,7 +119,7 @@ MEDICINES: List[Dict[str, Any]] = [
      "pharmacy_note": "Jangan terlalu kencang; cek sirkulasi distal."},
 ]
 
-# Target hari stok awal per PKM (skenario minggu ini). Stok = target hari × konsumsi harian
+# Target hari stok awal per Puskesmas (skenario minggu ini). Stok = target hari × konsumsi harian
 # terprediksi saat seed, sehingga status Merah/Kuning/Hijau mengikuti narasi proposal.
 TARGET_DAYS = {
     "PKM-A": {"MED-SAL-INH": 3.1, "MED-SAL-NEB": 5.5, "MED-PCT-TAB": 3.6, "MED-PCT-SYR": 9.0, "MED-AMB": 9.5, "MED-O2": 8.4, "MED-N95": 24.9, "MED-ORS": 30.3, "MED-AMX": 40},
@@ -130,7 +130,7 @@ TARGET_DAYS = {
     "PKM-F": {"MED-SAL-INH": 32, "MED-SAL-NEB": 30, "MED-PCT-TAB": 60, "MED-PCT-SYR": 35, "MED-AMB": 28, "MED-O2": 22, "MED-N95": 36, "MED-ORS": 40, "MED-AMX": 55},
     "PKM-G": {"MED-SAL-INH": 28.4, "MED-SAL-NEB": 25, "MED-PCT-TAB": 26, "MED-PCT-SYR": 27, "MED-AMB": 24, "MED-O2": 20, "MED-N95": 30, "MED-ORS": 35, "MED-AMX": 50},
 }
-SALBUTAMOL_SURPLUS_PKM_B = 350  # PKM Rasau Jaya: surplus 350 canister di atas cadangan aman
+SALBUTAMOL_SURPLUS_PKM_B = 350  # Puskesmas Rasau Jaya: surplus 350 canister di atas cadangan aman
 # Stok absolut untuk obat yang tidak dikonsumsi pada skenario karhutla
 STATIC_STOCK = {"MED-ZINC": 400, "MED-DOXY": 200, "MED-MIC": 60, "MED-POV": 40, "MED-KASSA": 500, "MED-ELAST": 30}
 
@@ -236,11 +236,11 @@ def seed_database(db: Session) -> bool:
             continue
         daily = m["daily_consumption_forecast"]
         inv = db.scalar(select(Inventory).where(Inventory.puskesmas_id == m["puskesmas_id"], Inventory.medicine_id == m["medicine_id"]))
-        if target is None:  # surplus eksplisit PKM B
+        if target is None:  # surplus eksplisit Puskesmas B
             reserve_days = pkm_lead[m["puskesmas_id"]] + settings.yellow_buffer_days + settings.donor_reserve_days
             inv.current_stock = math.ceil(daily * reserve_days) + SALBUTAMOL_SURPLUS_PKM_B
         else:
             inv.current_stock = max(1, round(daily * target))
     db.commit()
-    logger.info("Seed data FarmaSigap selesai (%d PKM, %d obat)", len(PUSKESMAS_LIST), len(MEDICINES))
+    logger.info("Seed data FarmaSigap selesai (%d Puskesmas, %d obat)", len(PUSKESMAS_LIST), len(MEDICINES))
     return True

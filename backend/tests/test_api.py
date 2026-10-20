@@ -4,7 +4,7 @@ from app.ml.ispa_model import ISPAForecaster
 from app.routers.donation import expiry_flag
 from app.services.stock import classify_status, days_of_stock, medicine_need_units
 
-PHARMACIST = "Apt. Rian Pratama, S.Farm"
+PHARMACIST = "Apt. Mohammad Rifqi Faiz"
 
 
 # ------------------------------------------------------------- formula ----
@@ -55,7 +55,7 @@ def test_inventory_pkm_a_is_critical(client):
 
 
 def test_inventory_unknown_pkm(client):
-    assert client.get("/api/inventory/priority-medicines", params={"puskesmas_id": "PKM-Z"}).status_code == 404
+    assert client.get("/api/inventory/priority-medicines", params={"puskesmas_id": "Puskesmas-Z"}).status_code == 404
 
 
 def test_predict_ispa(client):
@@ -138,6 +138,6 @@ def test_donation_match(client):
 
 
 def test_stock_update_creates_audit(client):
-    r = client.put("/api/inventory/PKM-C/MED-AMB", json={"current_stock": 500, "updated_by": PHARMACIST, "reason": "Penerimaan IFK"})
+    r = client.put("/api/inventory/PKM-C/MED-AMB", json={"current_stock": 500, "updated_by": PHARMACIST, "reason": "Penerimaan Instalasi Farmasi"})
     assert r.status_code == 200
     assert r.json()["data"]["status"] == "hijau"

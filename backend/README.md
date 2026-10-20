@@ -1,6 +1,6 @@
 # FarmaSigap Backend Service
 
-Backend API untuk platform **FarmaSigap**: Platform Prediktif Berbasis AI & Big Data untuk Antisipasi Kebutuhan dan Distribusi Obat pada Situasi Bencana di Indonesia. Fokus tahap 1: Karhutla & lonjakan ISPA di Kabupaten Kubu Raya, Kalimantan Barat (7 puskesmas, PKM A–G).
+Backend API untuk platform **FarmaSigap**: Platform Prediktif Berbasis AI & Big Data untuk Antisipasi Kebutuhan dan Distribusi Obat pada Situasi Bencana di Indonesia. Fokus tahap 1: Karhutla & lonjakan ISPA di Kabupaten Kubu Raya, Kalimantan Barat (7 puskesmas, Puskesmas A–G).
 
 Stack: FastAPI · Pydantic v2 · SQLAlchemy 2 (SQLite, siap PostgreSQL/PostGIS) · LightGBM / scikit-learn (Quantile Regression P10/P50/P90).
 
@@ -17,7 +17,7 @@ uvicorn app.main:app --reload --port 8000
 Saat startup pertama, server akan:
 1. membuat tabel SQLite (`backend/farmasigap.db`),
 2. melatih model ISPA (±2 detik) lalu menyimpannya di `app/ml/artifacts/`,
-3. mengisi seed data (7 PKM, katalog obat, riwayat ISPA 12 minggu, titik panas, stok), lalu menghitung usulan redistribusi dan alert.
+3. mengisi seed data (7 Puskesmas, katalog obat, riwayat ISPA 12 minggu, titik panas, stok), lalu menghitung usulan redistribusi dan alert.
 
 Alamat penting:
 - Dasbor web: http://localhost:8000/app/ (frontend disajikan langsung oleh backend)
@@ -44,9 +44,9 @@ Salin `.env.example` menjadi `.env`. Variabel utama: `DATABASE_URL`, `SEED_ON_ST
 | KUNING | Hari stok < lead time + 7 hari |
 | HIJAU | Hari stok ≥ lead time + 7 hari |
 
-Prediksi kasus per PKM = prediksi P90 kabupaten × porsi PKM (populasi × bobot paparan asap ÷ total 7 PKM). Proporsi dan unit per kasus tiap obat disimpan di `Medicine.disaster_params` (lihat `app/mock_data.py`).
+Prediksi kasus per Puskesmas = prediksi P90 kabupaten × porsi Puskesmas (populasi × bobot paparan asap ÷ total 7 Puskesmas). Proporsi dan unit per kasus tiap obat disimpan di `Medicine.disaster_params` (lihat `app/mock_data.py`).
 
-**Redistribusi:** penerima adalah PKM MERAH/KUNING, dengan kebutuhan sebesar jumlah yang diperlukan agar stok kembali ke ambang HIJAU. Donor adalah PKM HIJAU, dan surplusnya = stok − konsumsi × (lead time + 7 + 14 hari cadangan). Donor dicocokkan mulai dari yang terdekat, memakai jarak jalan bila tersedia (mis. Rasau Jaya → Sungai Raya 12,4 km), selain itu haversine × 1,3. Mutasi yang menambah kurang dari 1 hari stok dilewati. Persetujuan memindahkan stok dan dicatat di audit log. Penolakan wajib menyertakan alasan.
+**Redistribusi:** penerima adalah Puskesmas MERAH/KUNING, dengan kebutuhan sebesar jumlah yang diperlukan agar stok kembali ke ambang HIJAU. Donor adalah Puskesmas HIJAU, dan surplusnya = stok − konsumsi × (lead time + 7 + 14 hari cadangan). Donor dicocokkan mulai dari yang terdekat, memakai jarak jalan bila tersedia (mis. Rasau Jaya → Sungai Raya 12,4 km), selain itu haversine × 1,3. Mutasi yang menambah kurang dari 1 hari stok dilewati. Persetujuan memindahkan stok dan dicatat di audit log. Penolakan wajib menyertakan alasan.
 
 ## Endpoint
 
@@ -57,9 +57,9 @@ Prediksi kasus per PKM = prediksi P90 kabupaten × porsi PKM (populasi × bobot 
 | POST | `/api/hazard/drug-mapping` | Sama dengan di atas (body `{disaster_type}`) |
 | GET | `/api/hazard/telemetry` | PM2.5/ISPU, titik panas, curah hujan, status siaga |
 | GET | `/api/hazard/hotspots` | Klaster titik panas NASA FIRMS |
-| GET | `/api/hazard/puskesmas` | 7 PKM + status stok terburuk |
+| GET | `/api/hazard/puskesmas` | 7 Puskesmas + status stok terburuk |
 | GET | `/api/inventory/priority-medicines?puskesmas_id=PKM-A` | Kebutuhan, hari stok, status per obat |
-| GET | `/api/inventory/summary` · `/api/inventory/all` | Ringkasan per PKM · seluruh inventori |
+| GET | `/api/inventory/summary` · `/api/inventory/all` | Ringkasan per Puskesmas · seluruh inventori |
 | PUT | `/api/inventory/{pkm}/{obat}` | Perbarui stok (dicatat di audit log) |
 | POST | `/api/inventory/calculate` | Kalkulator formula tanpa database |
 | GET | `/api/inventory/alerts` | Alert MERAH/KUNING |
@@ -67,8 +67,8 @@ Prediksi kasus per PKM = prediksi P90 kabupaten × porsi PKM (populasi × bobot 
 | GET | `/api/predict/ispa-trend` | Data grafik aktual + prediksi (alias lama: `/api/prediction/ispa-trend`) |
 | GET | `/api/predict/model-info` · POST `/api/predict/train` | Status/metrik model · latih ulang |
 | GET | `/api/redistribution/suggestions` | Usulan mutasi surplus → defisit |
-| POST | `/api/redistribution/generate` | Hitung ulang usulan (+ kebutuhan yang perlu pengadaan IFK) |
-| POST | `/api/redistribution/action` | Approve/reject oleh apoteker IFK |
+| POST | `/api/redistribution/generate` | Hitung ulang usulan (+ kebutuhan yang perlu pengadaan Instalasi Farmasi) |
+| POST | `/api/redistribution/action` | Approve/reject oleh apoteker Instalasi Farmasi |
 | GET | `/api/redistribution/audit-logs` | Riwayat audit |
 | POST | `/api/posko/calculate-kit` | Kit obat posko (adaptasi WHO IEHK 2024) |
 | POST | `/api/donation/match` | Validasi donasi (formularium + flag ED) |
