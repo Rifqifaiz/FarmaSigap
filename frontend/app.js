@@ -112,6 +112,12 @@ function applyTheme(theme) {
     if (labelEl) labelEl.innerText = "Mode Gelap";
   }
 
+  // Ganti logo tunggal sesuai tema aktif (1 logo saja di atas)
+  const logoEl = document.getElementById("main-brand-logo");
+  if (logoEl) {
+    logoEl.src = theme === "light" ? "assets/logo-light.png" : "assets/logo-dark.png";
+  }
+
   // Ganti basemap peta dasbor (gelap / terang)
   if (mapInstance) {
     updateMapTileTheme(theme);
