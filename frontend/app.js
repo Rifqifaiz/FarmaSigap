@@ -133,12 +133,23 @@ function setViewportWidth(width) {
   if (meta) meta.setAttribute("content", width === "device-width" ? "width=device-width, initial-scale=1.0" : `width=${width}`);
 }
 
-function showGate(id) {
-  document.documentElement.classList.toggle("gate-active", Boolean(id));
-  ["gate-login", "gate-mode"].forEach(gate => (document.getElementById(gate).hidden = gate !== id));
-  if (!id) return;
-  setViewportWidth("device-width");
-  if (id === "gate-mode") {
+// --- Intro bergaya slide: 0 Selamat datang, 1 Masuk, 2 Pilih tampilan ---
+let introSlide = 0;
+
+function goToSlide(index) {
+  introSlide = index;
+  document.querySelectorAll(".intro-slide").forEach(slide => {
+    const i = Number(slide.dataset.slide);
+    slide.classList.toggle("is-active", i === index);
+    slide.classList.toggle("is-before", i < index);
+    slide.classList.toggle("is-after", i > index);
+    slide.inert = i !== index;
+    slide.setAttribute("aria-hidden", String(i !== index));
+  });
+  document.querySelectorAll(".intro-step").forEach((step, i) => step.classList.toggle("done", i <= index));
+  document.getElementById("intro-back").hidden = index === 0;
+
+  if (index === 2) {
     const recommended = deviceLooksMobile() ? "mobile" : "desktop";
     document.querySelectorAll(".mode-option").forEach(btn => {
       const isRec = btn.dataset.mode === recommended;
@@ -146,6 +157,59 @@ function showGate(id) {
       btn.querySelector(".mode-recommend").hidden = !isRec;
     });
   }
+  // Fokus ke elemen utama slide setelah animasi geser
+  setTimeout(() => {
+    const target = document.querySelector(`.intro-slide[data-slide="${index}"]`).querySelector("input, .intro-btn, .mode-option");
+    if (target && !window.matchMedia("(pointer: coarse)").matches) target.focus({ preventScroll: true });
+  }, 450);
+}
+window.goToSlide = goToSlide;
+
+window.introBack = function() {
+  if (introSlide === 2) {
+    storageSet(sessionStorage, SESSION_KEY, null); // kembali ke form masuk = ganti akun
+    goToSlide(1);
+  } else if (introSlide > 0) {
+    goToSlide(introSlide - 1);
+  }
+};
+
+function showIntro(slide) {
+  const intro = document.getElementById("intro");
+  intro.hidden = false;
+  intro.classList.remove("is-leaving");
+  document.documentElement.classList.add("gate-active");
+  setViewportWidth("device-width");
+  goToSlide(slide);
+}
+
+function hideIntro() {
+  const intro = document.getElementById("intro");
+  document.documentElement.classList.remove("gate-active");
+  if (intro.hidden) return;
+  intro.classList.add("is-leaving"); // memudar ke beranda
+  setTimeout(() => (intro.hidden = true), REDUCED_MOTION_INTRO ? 0 : 600);
+}
+
+const REDUCED_MOTION_INTRO = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+function initIntroGestures() {
+  const intro = document.getElementById("intro");
+  let startX = null;
+  let startY = null;
+  intro.addEventListener("touchstart", e => {
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+  }, { passive: true });
+  intro.addEventListener("touchend", e => {
+    if (startX === null) return;
+    const dx = e.changedTouches[0].clientX - startX;
+    const dy = e.changedTouches[0].clientY - startY;
+    startX = null;
+    if (Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+    if (dx > 0) introBack();               // geser ke kanan = kembali
+    else if (introSlide === 0) goToSlide(1); // geser ke kiri dari slide sambutan = mulai
+  }, { passive: true });
 }
 
 function applyDisplayMode(mode) {
@@ -161,7 +225,7 @@ function applyDisplayMode(mode) {
 
 function enterApp(mode) {
   applyDisplayMode(mode);
-  showGate(null);
+  hideIntro();
   applyUserToUI();
   window.scrollTo(0, 0);
 }
@@ -169,10 +233,15 @@ function enterApp(mode) {
 function initGate() {
   applyUserToUI();
   observeTables();
+  initIntroGestures();
   const hasSession = Boolean(storageGet(sessionStorage, SESSION_KEY));
   const rememberedMode = storageGet(localStorage, DISPLAY_MODE_KEY);
-  if (hasSession && rememberedMode) enterApp(rememberedMode);
-  else showGate(hasSession ? "gate-mode" : "gate-login");
+  if (hasSession && rememberedMode) {
+    document.getElementById("intro").hidden = true;
+    enterApp(rememberedMode);
+  } else {
+    showIntro(hasSession ? 2 : 0);
+  }
 
   document.addEventListener("keydown", e => {
     if (e.key === "Escape") toggleAccountMenu(false);
@@ -184,7 +253,7 @@ function startSession(user) {
   applyUserToUI();
   const rememberedMode = storageGet(localStorage, DISPLAY_MODE_KEY);
   if (rememberedMode) enterApp(rememberedMode);
-  else showGate("gate-mode");
+  else goToSlide(2);
 }
 
 window.submitLogin = function(event) {
@@ -225,7 +294,7 @@ window.logout = function() {
   document.documentElement.classList.remove("mode-mobile", "mode-desktop");
   document.getElementById("login-form").reset();
   switchMainView("home");
-  showGate("gate-login");
+  showIntro(1);
 };
 
 window.toggleAccountMenu = function(force) {
