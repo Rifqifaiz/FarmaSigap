@@ -17,6 +17,7 @@
   <!-- MapLibre GL JS -->
   <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@5.8.0/dist/maplibre-gl.js"></script>
 
+  <link rel="icon" type="image/png" href="assets/favicon.png">
   <link rel="stylesheet" href="style.css">
 </head>
 <body class="futuristic-theme" data-theme="dark">
@@ -28,16 +29,10 @@
   <header class="navbar-futuristic">
     <div class="nav-container">
       <div class="nav-left">
-        <a href="#hero" class="brand-link" onclick="switchMainView('home')">
-          <div class="brand-icon-hex">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-            </svg>
-          </div>
-          <div class="brand-titles">
-            <span class="brand-core">Farma<span class="brand-glow">Sigap</span></span>
-            <span class="brand-tagline">Disaster Medicine AI</span>
-          </div>
+        <a href="#hero" class="brand-link" onclick="switchMainView('home')" title="FarmaSigap · Beranda">
+          <img src="assets/logo-dark.png" alt="FarmaSigap" class="brand-logo-img dark-logo" height="38">
+          <img src="assets/logo-light.png" alt="FarmaSigap" class="brand-logo-img light-logo" height="38">
+          <span class="brand-badge">AI Platform</span>
         </a>
       </div>
 
@@ -276,6 +271,41 @@
         </div>
       </div>
     </section>
+
+    <!-- FOOTER -->
+    <footer class="footer-futuristic">
+      <div class="footer-container">
+        <div class="footer-col-brand">
+          <div class="footer-logo-wrap">
+            <img src="assets/logo-dark.png" alt="FarmaSigap" class="brand-logo-img dark-logo" height="34">
+            <img src="assets/logo-light.png" alt="FarmaSigap" class="brand-logo-img light-logo" height="34">
+          </div>
+          <p class="footer-desc">
+            Platform Prediktif Berbasis AI & Big Data untuk Antisipasi Kebutuhan dan Distribusi Obat pada Situasi Bencana di Indonesia.
+          </p>
+          <div class="footer-affiliation">
+            <span>Fakultas Farmasi Universitas Indonesia</span> · <span>TKT-3 Inovasi Digital 2026</span>
+          </div>
+        </div>
+        <div class="footer-col-nav">
+          <div class="footer-col-title">Modul Sistem</div>
+          <a href="#hero" onclick="switchMainView('home')">Beranda &amp; 3 Pilar</a>
+          <a href="#command-center" onclick="switchMainView('command-center')">Dasbor Instalasi Farmasi</a>
+          <a href="#posko-section" onclick="switchMainView('posko')">Kalkulator Kit Posko</a>
+          <a href="#donation-section" onclick="switchMainView('donation')">Pencocok Donasi Obat</a>
+        </div>
+        <div class="footer-col-nav">
+          <div class="footer-col-title">Wilayah Bencana Pilot</div>
+          <span>Kabupaten Kubu Raya, Kalbar</span>
+          <span>7 Puskesmas Rawan Karhutla</span>
+          <span>Koridor Rantai Pasok Terhubung</span>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div>© 2026 FarmaSigap · Disaster Medicine Anticipation Platform</div>
+        <div class="footer-tech-stack">FastAPI · LightGBM Q-Regression · MapLibre GL · Chart.js</div>
+      </div>
+    </footer>
 
   </div>
 
