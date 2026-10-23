@@ -1984,3 +1984,627 @@ body[data-theme="light"] .footer-col-nav a:hover {
   }
 }
 
+
+/* ==========================================================================
+   Gerbang Masuk & Pilih Mode Tampilan
+   ========================================================================== */
+
+/* Saat gerbang aktif, sembunyikan aplikasi (kanvas gelombang tetap jadi latar) */
+html.gate-active body > :not(.gate-screen):not(#cyber-waves-canvas):not(#toast-container) {
+  display: none !important;
+}
+
+.gate-screen {
+  position: relative;
+  z-index: 10;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 16px;
+}
+
+.gate-screen[hidden] {
+  display: none;
+}
+
+.gate-card {
+  width: 100%;
+  max-width: 420px;
+  background: var(--color-panel);
+  backdrop-filter: blur(18px);
+  border: 1px solid var(--border-blue);
+  border-radius: 18px;
+  box-shadow: var(--shadow-panel), 0 0 60px var(--color-primary-dim);
+  padding: 32px 28px 24px;
+  text-align: center;
+  animation: gateIn 0.45s ease-out;
+}
+
+.gate-card-wide {
+  max-width: 680px;
+}
+
+@keyframes gateIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.gate-logo {
+  width: min(260px, 78%);
+  height: auto;
+  display: block;
+  margin: 0 auto 10px;
+}
+
+.gate-tagline {
+  font-size: 12px;
+  color: var(--color-white-muted);
+  line-height: 1.5;
+  margin-bottom: 22px;
+}
+
+.gate-title {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--color-white);
+  letter-spacing: -0.02em;
+  margin-bottom: 6px;
+}
+
+.gate-subtitle {
+  font-size: 13px;
+  color: var(--color-white-dim);
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.gate-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  text-align: left;
+}
+
+.gate-field label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-white-dim);
+  margin-bottom: 6px;
+}
+
+.gate-field .cyber-input {
+  width: 100%;
+  min-height: 44px;
+  font-size: 14px;
+}
+
+.password-wrap {
+  position: relative;
+}
+
+.password-wrap .cyber-input {
+  padding-right: 44px;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 38px;
+  height: 38px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 16px;
+  opacity: 0.7;
+}
+
+.password-toggle:hover {
+  opacity: 1;
+}
+
+.gate-submit {
+  min-height: 46px;
+  justify-content: center;
+  font-size: 15px;
+  margin-top: 4px;
+}
+
+.gate-link-btn {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 8px;
+  align-self: center;
+}
+
+.gate-link-btn:hover {
+  text-decoration: underline;
+}
+
+.gate-note {
+  margin-top: 14px;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--color-white-muted);
+}
+
+.gate-footer {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 11px;
+  color: var(--color-white-muted);
+}
+
+.gate-theme-btn {
+  background: var(--nav-center-bg);
+  border: 1px solid var(--border-subtle);
+  color: var(--color-white-dim);
+  border-radius: 999px;
+  padding: 5px 12px;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.mode-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.mode-option {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 26px 18px 20px;
+  background: var(--nav-center-bg);
+  border: 1.5px solid var(--border-subtle);
+  border-radius: 14px;
+  color: var(--color-white);
+  cursor: pointer;
+  text-align: center;
+  font-family: var(--font-body);
+  transition: transform var(--transition-fast, 0.2s), border-color 0.2s, box-shadow 0.2s;
+}
+
+.mode-option:hover,
+.mode-option:focus-visible {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 24px var(--color-primary-dim);
+  transform: translateY(-2px);
+  outline: none;
+}
+
+.mode-option.recommended {
+  border-color: var(--border-mint);
+}
+
+.mode-option strong {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.mode-option span:not(.mode-recommend) {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--color-white-dim);
+}
+
+.mode-illustration {
+  width: 84px;
+  height: 64px;
+  color: var(--color-primary);
+}
+
+.mode-illustration .ill-fill-a { fill: var(--color-primary); opacity: 0.55; }
+.mode-illustration .ill-fill-b { fill: var(--color-mint); opacity: 0.55; }
+
+.mode-recommend {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  background: var(--color-mint);
+  color: #06210f;
+  padding: 3px 9px;
+  border-radius: 999px;
+}
+
+.gate-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--color-white-dim);
+  cursor: pointer;
+  margin-bottom: 4px;
+}
+
+.gate-check input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--color-primary);
+}
+
+/* ==========================================================================
+   Menu Akun
+   ========================================================================== */
+
+.account-menu {
+  position: relative;
+}
+
+.account-chip {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  border-radius: 50%;
+}
+
+.account-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-mint));
+  color: #ffffff;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.account-avatar.large { width: 44px; height: 44px; font-size: 15px; }
+.account-avatar.small { width: 24px; height: 24px; font-size: 10px; }
+
+.account-panel {
+  position: fixed;
+  top: 72px;
+  right: 24px;
+  z-index: 3000;
+  width: 290px;
+  background: var(--color-panel-solid);
+  border: 1px solid var(--border-blue);
+  border-radius: 14px;
+  box-shadow: var(--shadow-panel);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.account-panel[hidden],
+.account-backdrop[hidden] {
+  display: none;
+}
+
+.account-panel-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 4px 12px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.account-panel-head strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 14px;
+  color: var(--color-white);
+}
+
+.account-panel-head small {
+  font-size: 11px;
+  color: var(--color-white-muted);
+}
+
+.account-action {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 42px;
+  padding: 8px 10px;
+  background: none;
+  border: none;
+  border-radius: 8px;
+  color: var(--color-white);
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+
+.account-action:hover {
+  background: var(--card-hover-bg);
+}
+
+.account-action.danger {
+  color: var(--status-red);
+}
+
+.account-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 2900;
+  background: transparent;
+}
+
+/* Navigasi bawah hanya untuk Mode HP */
+.mobile-tabbar {
+  display: none;
+}
+
+/* ==========================================================================
+   MODE HP – layout satu kolom, navigasi bawah, tabel menjadi kartu
+   Di layar lebar, Mode HP ditampilkan dalam bingkai selebar ponsel (430px).
+   ========================================================================== */
+
+html.mode-mobile {
+  background: #02050d;
+}
+
+html.mode-mobile:has(body[data-theme="light"]) {
+  background: #dfe5f2;
+}
+
+html.mode-mobile body {
+  max-width: 430px;
+  margin: 0 auto;
+  min-height: 100vh;
+  padding-bottom: calc(70px + env(safe-area-inset-bottom));
+  box-shadow: 0 0 0 1px var(--border-subtle), 0 0 80px rgba(0, 0, 0, 0.6);
+  overflow-x: hidden;
+}
+
+/* Navbar ringkas */
+html.mode-mobile .nav-container { padding: 0 14px; gap: 10px; }
+html.mode-mobile .navbar-futuristic { padding: 10px 0; padding-top: calc(10px + env(safe-area-inset-top)); }
+html.mode-mobile .brand-logo-img { height: 30px; max-width: 140px; }
+html.mode-mobile .nav-center,
+html.mode-mobile .nav-cta,
+html.mode-mobile .theme-label,
+html.mode-mobile .telemetry-pill .telemetry-txt { display: none; }
+html.mode-mobile .nav-right { gap: 8px; }
+html.mode-mobile .theme-switch-btn { padding: 6px 9px; }
+html.mode-mobile .telemetry-pill { padding: 6px 8px; }
+html.mode-mobile .account-avatar:not(.large):not(.small) { width: 32px; height: 32px; font-size: 12px; }
+
+/* Panel akun tampil sebagai bottom sheet */
+html.mode-mobile .account-panel {
+  top: auto;
+  bottom: 0;
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
+  width: min(100%, 430px);
+  border-radius: 18px 18px 0 0;
+  padding: 18px 16px calc(18px + env(safe-area-inset-bottom));
+  animation: sheetUp 0.25s ease-out;
+}
+
+html.mode-mobile .account-backdrop {
+  background: rgba(0, 0, 0, 0.45);
+}
+
+@keyframes sheetUp {
+  from { transform: translate(-50%, 100%); }
+  to { transform: translate(-50%, 0); }
+}
+
+/* Navigasi bawah */
+html.mode-mobile .mobile-tabbar {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(100%, 430px);
+  z-index: 2000;
+  background: var(--navbar-bg);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border-subtle);
+  padding: 6px 4px calc(6px + env(safe-area-inset-bottom));
+}
+
+html.mode-mobile .mobile-tabbar button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  min-height: 52px;
+  background: none;
+  border: none;
+  border-radius: 10px;
+  color: var(--color-white-muted);
+  font-family: var(--font-display);
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+html.mode-mobile .mobile-tabbar svg {
+  width: 22px;
+  height: 22px;
+}
+
+html.mode-mobile .mobile-tabbar button.active {
+  color: var(--color-primary);
+  background: var(--color-primary-dim);
+}
+
+/* Beranda */
+html.mode-mobile .hero-section { padding: 24px 0 28px; }
+html.mode-mobile .hero-container { grid-template-columns: 1fr; padding: 0 16px; gap: 8px; }
+html.mode-mobile .hero-badge { max-width: 100%; }
+html.mode-mobile .hero-badge .badge-text { font-size: 9px; white-space: normal; }
+html.mode-mobile .hero-title { font-size: 29px; margin-bottom: 14px; }
+html.mode-mobile .hero-title br { display: none; }
+html.mode-mobile .hero-description { font-size: 14px; }
+html.mode-mobile .hero-cta-group { flex-direction: column; align-items: stretch; gap: 10px; }
+html.mode-mobile .hero-cta-group > * { justify-content: center; text-align: center; width: 100%; }
+html.mode-mobile .hero-metrics-ribbon { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; padding: 14px 16px; }
+html.mode-mobile .metric-divider { display: none; }
+html.mode-mobile .globe-container { height: 330px; }
+html.mode-mobile .earth-globe-wrap { width: min(280px, 72vw); }
+html.mode-mobile .earth-globe-wrap .ring-2,
+html.mode-mobile .earth-globe-wrap .ring-3 { display: none; }
+html.mode-mobile .floating-telemetry-card { padding: 7px 10px; gap: 8px; }
+html.mode-mobile .floating-telemetry-card strong { font-size: 11px; }
+html.mode-mobile .floating-telemetry-card.top-left { top: 4px; left: 0; }
+html.mode-mobile .floating-telemetry-card.bottom-right { bottom: 4px; right: 0; }
+
+html.mode-mobile .section-container { padding: 0 16px; }
+html.mode-mobile .pillars-section,
+html.mode-mobile .workflow-section { padding: 36px 0; }
+html.mode-mobile .section-title { font-size: 25px; }
+html.mode-mobile .pillars-grid { grid-template-columns: 1fr; gap: 14px; }
+html.mode-mobile .workflow-steps { flex-direction: column; align-items: stretch; }
+html.mode-mobile .step-connector { display: none; }
+html.mode-mobile .cta-box { flex-direction: column; align-items: stretch; text-align: center; gap: 16px; padding: 22px 18px; }
+html.mode-mobile .btn-cta-primary.large { width: 100%; justify-content: center; }
+
+/* Dasbor & subhalaman */
+html.mode-mobile .command-container,
+html.mode-mobile .subpage-container { padding: 16px 12px 24px; }
+html.mode-mobile .command-subheader,
+html.mode-mobile .subpage-header { flex-direction: column; align-items: stretch; gap: 12px; }
+html.mode-mobile .sub-left { flex-direction: column; align-items: flex-start; gap: 10px; }
+html.mode-mobile .sub-right { flex-wrap: wrap; gap: 8px; }
+html.mode-mobile .command-title-wrap h2,
+html.mode-mobile .subpage-header h2 { font-size: 20px; }
+html.mode-mobile .btn-back-home { display: none; }
+html.mode-mobile .command-grid-2x2 { grid-template-columns: 1fr; gap: 14px; }
+html.mode-mobile .panel-head { flex-wrap: wrap; gap: 10px; padding: 12px 14px; }
+html.mode-mobile .panel-content { padding: 12px 14px; }
+html.mode-mobile .panel-content.map-wrap { padding: 0; min-height: 300px; }
+html.mode-mobile .map-futuristic { height: 300px; }
+html.mode-mobile .map-view-switch { width: 100%; overflow-x: auto; flex-wrap: nowrap; }
+html.mode-mobile .map-toggle-btn { flex: 0 0 auto; min-height: 36px; }
+html.mode-mobile .map-hud-overlay { position: static; margin: 10px 12px; }
+html.mode-mobile .map-hud-overlay .hud-item { flex-direction: column; gap: 0; margin-bottom: 6px; }
+html.mode-mobile .head-legend { gap: 4px; }
+html.mode-mobile .panel-foot.flex-between { flex-direction: column; align-items: flex-start; gap: 6px; }
+
+html.mode-mobile .mutation-route-bar { flex-direction: column; align-items: stretch; gap: 8px; }
+html.mode-mobile .mutation-connector { flex-direction: row; justify-content: center; gap: 8px; }
+html.mode-mobile .mutation-connector .arrow-glow { transform: rotate(90deg); }
+html.mode-mobile .facility.to { text-align: left; }
+html.mode-mobile .drug-allocation-box { flex-direction: column; align-items: flex-start; gap: 8px; }
+html.mode-mobile .approval-buttons { flex-direction: column; }
+html.mode-mobile .approval-buttons button { width: 100%; min-height: 46px; }
+
+html.mode-mobile .posko-two-col { grid-template-columns: 1fr; gap: 14px; }
+html.mode-mobile .card-head-row { flex-direction: column; align-items: flex-start; gap: 10px; }
+html.mode-mobile .donation-toolbar { flex-direction: column; align-items: stretch; gap: 12px; }
+html.mode-mobile .donation-toolbar .btn-glow-blue { justify-content: center; }
+html.mode-mobile .cyber-input { min-height: 44px; font-size: 16px; } /* 16px mencegah auto-zoom iOS */
+html.mode-mobile input[type="range"] { width: 100%; }
+
+/* Tabel -> kartu */
+html.mode-mobile .cyber-table,
+html.mode-mobile .cyber-table tbody,
+html.mode-mobile .cyber-table tr,
+html.mode-mobile .cyber-table td {
+  display: block;
+  width: 100%;
+}
+
+html.mode-mobile .cyber-table thead {
+  display: none;
+}
+
+html.mode-mobile .cyber-table tr {
+  background: var(--nav-center-bg);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+}
+
+html.mode-mobile .cyber-table td {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 0;
+  border: none;
+  text-align: right;
+}
+
+html.mode-mobile .cyber-table td::before {
+  content: attr(data-label);
+  flex-shrink: 0;
+  max-width: 45%;
+  text-align: left;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--color-white-muted);
+}
+
+/* Sel pertama (nama obat) menjadi judul kartu */
+html.mode-mobile .cyber-table td:first-child {
+  display: block;
+  text-align: left;
+  padding-bottom: 8px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+html.mode-mobile .cyber-table td:first-child::before {
+  display: none;
+}
+
+html.mode-mobile .cyber-table .col-detail-only {
+  display: none;
+}
+
+html.mode-mobile body[data-detail-mode="detail"] .cyber-table .col-detail-only {
+  display: flex;
+}
+
+html.mode-mobile .toast-container {
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
+  width: min(calc(100% - 24px), 406px);
+  bottom: calc(82px + env(safe-area-inset-bottom));
+}
+
+@media (max-width: 600px) {
+  .mode-options { grid-template-columns: 1fr; }
+  .gate-card { padding: 26px 18px 20px; }
+  html.mode-mobile body { box-shadow: none; }
+}

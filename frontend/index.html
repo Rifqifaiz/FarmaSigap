@@ -25,6 +25,94 @@
   <!-- Background Animated Wave Canvas -->
   <canvas id="cyber-waves-canvas" class="cyber-waves"></canvas>
 
+  <!-- ==================== GERBANG 1: HALAMAN MASUK ==================== -->
+  <section id="gate-login" class="gate-screen" aria-labelledby="gate-login-title">
+    <div class="gate-card">
+      <img class="gate-logo theme-logo" src="assets/logo-dark.png" alt="FarmaSigap">
+      <p class="gate-tagline">Platform Prediktif AI untuk Antisipasi &amp; Distribusi Obat Bencana Indonesia</p>
+
+      <h1 id="gate-login-title" class="gate-title">Masuk ke Akun</h1>
+      <p class="gate-subtitle">Gunakan akun petugas farmasi Anda untuk mengakses dasbor.</p>
+
+      <form id="login-form" class="gate-form" onsubmit="submitLogin(event)">
+        <div class="gate-field">
+          <label for="login-name">Nama Lengkap / NIP</label>
+          <input id="login-name" class="cyber-input" autocomplete="name" required minlength="3" value="Apt. Mohammad Rifqi Faiz">
+        </div>
+        <div class="gate-field">
+          <label for="login-role">Peran</label>
+          <select id="login-role" class="cyber-input">
+            <option selected>Apoteker Instalasi Farmasi</option>
+            <option>Petugas Puskesmas</option>
+            <option>Dinas Kesehatan</option>
+            <option>Relawan Posko Bencana</option>
+          </select>
+        </div>
+        <div class="gate-field">
+          <label for="login-password">Kata Sandi</label>
+          <div class="password-wrap">
+            <input id="login-password" type="password" class="cyber-input" autocomplete="current-password" placeholder="••••••••">
+            <button type="button" class="password-toggle" onclick="togglePasswordVisibility()" aria-label="Tampilkan kata sandi" title="Tampilkan kata sandi">👁</button>
+          </div>
+        </div>
+        <button type="submit" class="btn-glow-blue btn-full gate-submit">Masuk</button>
+        <button type="button" class="gate-link-btn" onclick="loginAsGuest()">Lanjut sebagai Tamu (Demo)</button>
+      </form>
+
+      <p class="gate-note">🔒 Prototipe TKT-3: kata sandi belum diverifikasi, tidak disimpan, dan tidak dikirim ke server.</p>
+      <div class="gate-footer">
+        <button type="button" class="gate-theme-btn" onclick="toggleTheme()" title="Ubah mode terang / gelap">
+          <span class="theme-icon">🌙</span> Tema
+        </button>
+        <span>Fakultas Farmasi Universitas Indonesia</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== GERBANG 2: PILIH MODE TAMPILAN ==================== -->
+  <section id="gate-mode" class="gate-screen" aria-labelledby="gate-mode-title" hidden>
+    <div class="gate-card gate-card-wide">
+      <img class="gate-logo theme-logo" src="assets/logo-dark.png" alt="FarmaSigap">
+      <h1 id="gate-mode-title" class="gate-title">Halo, <span class="js-user-name">Petugas</span></h1>
+      <p class="gate-subtitle">Pilih tampilan yang sesuai dengan perangkat Anda. Mode bisa diganti kapan saja lewat menu akun.</p>
+
+      <div class="mode-options">
+        <button type="button" class="mode-option" data-mode="desktop" onclick="chooseDisplayMode('desktop')">
+          <span class="mode-recommend" hidden>Disarankan untuk perangkat ini</span>
+          <svg class="mode-illustration" viewBox="0 0 64 48" aria-hidden="true">
+            <rect x="4" y="4" width="56" height="34" rx="3" fill="none" stroke="currentColor" stroke-width="2.5"/>
+            <rect x="10" y="10" width="20" height="11" rx="1.5" class="ill-fill-a"/>
+            <rect x="33" y="10" width="21" height="11" rx="1.5" class="ill-fill-b"/>
+            <rect x="10" y="24" width="20" height="9" rx="1.5" class="ill-fill-b"/>
+            <rect x="33" y="24" width="21" height="9" rx="1.5" class="ill-fill-a"/>
+            <path d="M24 44h16M32 38v6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+          <strong>Mode Desktop</strong>
+          <span>Dasbor lengkap 2×2 untuk laptop dan monitor command center Instalasi Farmasi.</span>
+        </button>
+
+        <button type="button" class="mode-option" data-mode="mobile" onclick="chooseDisplayMode('mobile')">
+          <span class="mode-recommend" hidden>Disarankan untuk perangkat ini</span>
+          <svg class="mode-illustration" viewBox="0 0 64 48" aria-hidden="true">
+            <rect x="21" y="2" width="22" height="44" rx="4" fill="none" stroke="currentColor" stroke-width="2.5"/>
+            <rect x="25" y="8" width="14" height="8" rx="1.5" class="ill-fill-a"/>
+            <rect x="25" y="18" width="14" height="8" rx="1.5" class="ill-fill-b"/>
+            <rect x="25" y="28" width="14" height="6" rx="1.5" class="ill-fill-a"/>
+            <path d="M26 40h12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+          <strong>Mode HP</strong>
+          <span>Tampilan satu kolom dengan navigasi bawah untuk petugas Puskesmas dan posko di lapangan.</span>
+        </button>
+      </div>
+
+      <label class="gate-check">
+        <input type="checkbox" id="remember-mode">
+        Ingat pilihan saya di perangkat ini
+      </label>
+      <button type="button" class="gate-link-btn" onclick="logout()">← Ganti akun</button>
+    </div>
+  </section>
+
   <!-- ==================== TOP NAVIGATION BAR ==================== -->
   <header class="navbar-futuristic">
     <div class="nav-container">
@@ -55,10 +143,17 @@
           <span class="telemetry-txt">SIAGA KARHUTLA · PM2.5: <b>184.5</b></span>
         </div>
 
-        <button class="btn-glow-blue" onclick="switchMainView('command-center')">
+        <button class="btn-glow-blue nav-cta" onclick="switchMainView('command-center')">
           <span>Buka Dasbor Instalasi Farmasi</span>
           <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </button>
+
+        <!-- Menu akun: info pengguna, ganti mode tampilan, keluar -->
+        <div class="account-menu">
+          <button type="button" id="account-btn" class="account-chip" onclick="toggleAccountMenu()" aria-haspopup="true" aria-expanded="false" title="Akun">
+            <span class="account-avatar js-user-initials">MR</span>
+          </button>
+        </div>
       </div>
     </div>
   </header>
@@ -339,7 +434,7 @@
             <span id="backend-status-pill">Backend: Standalone (Data Sintetis)</span>
           </div>
           <div class="pharmacist-tag">
-            <span>Apt. Mohammad Rifqi Faiz (Instalasi Farmasi)</span>
+            <span><span class="js-user-name">Apt. Mohammad Rifqi Faiz</span> (<span class="js-user-role">Apoteker Instalasi Farmasi</span>)</span>
           </div>
         </div>
       </div>
@@ -544,7 +639,7 @@
                   ✕ Tolak / Sesuaikan
                 </button>
               </div>
-              <small class="audit-trail-text">🔒 Keputusan mutasi dicatat resmi dalam audit log atas nama Apt. Mohammad Rifqi Faiz.</small>
+              <small class="audit-trail-text">🔒 Keputusan mutasi dicatat resmi dalam audit log atas nama <span class="js-user-name">Apt. Mohammad Rifqi Faiz</span>.</small>
             </div>
           </div>
         </div>
@@ -669,6 +764,45 @@
       </div>
     </div>
   </div>
+
+  <!-- Panel akun (dropdown di desktop, bottom sheet di mode HP) -->
+  <div id="account-panel" class="account-panel" hidden>
+    <div class="account-panel-head">
+      <span class="account-avatar large js-user-initials">MR</span>
+      <div>
+        <strong class="js-user-name">Apt. Mohammad Rifqi Faiz</strong>
+        <small class="js-user-role">Apoteker Instalasi Farmasi</small>
+      </div>
+    </div>
+    <button type="button" class="account-action" onclick="toggleTheme()"><span class="theme-icon">🌙</span> Ganti Tema Terang / Gelap</button>
+    <button type="button" class="account-action" id="switch-mode-btn" onclick="switchDisplayMode()">📱 Ganti ke Mode HP</button>
+    <button type="button" class="account-action danger" onclick="logout()">↩ Keluar</button>
+  </div>
+  <div id="account-backdrop" class="account-backdrop" hidden onclick="toggleAccountMenu(false)"></div>
+
+  <!-- Navigasi bawah (khusus Mode HP) -->
+  <nav class="mobile-tabbar" aria-label="Navigasi utama">
+    <button type="button" data-view="home" class="active" onclick="switchMainView('home')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>
+      <span>Beranda</span>
+    </button>
+    <button type="button" data-view="command-center" onclick="switchMainView('command-center')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+      <span>Dasbor</span>
+    </button>
+    <button type="button" data-view="posko" onclick="switchMainView('posko')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17h.01"/></svg>
+      <span>Kit Posko</span>
+    </button>
+    <button type="button" data-view="donation" onclick="switchMainView('donation')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21.2l8.8-8.8a5.5 5.5 0 0 0 0-7.8z"/></svg>
+      <span>Donasi</span>
+    </button>
+    <button type="button" data-view="account" onclick="toggleAccountMenu()">
+      <span class="account-avatar small js-user-initials">MR</span>
+      <span>Akun</span>
+    </button>
+  </nav>
 
   <!-- Notification Toast -->
   <div id="toast-container" class="toast-container"></div>

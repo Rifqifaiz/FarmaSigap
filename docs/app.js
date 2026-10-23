@@ -74,6 +74,7 @@ let currentDetailMode = "simple"; // "simple" or "detail"
 document.addEventListener("DOMContentLoaded", () => {
   initCyberWavesCanvas();
   initTheme();
+  initGate();
   initMap();
   initHeroGlobe();
   loadMedicineTable(FALLBACK_DATA.medicines);
@@ -82,6 +83,178 @@ document.addEventListener("DOMContentLoaded", () => {
   initDonationRows();
   checkBackendHealth();
 });
+
+// ==========================================================================
+// 0. GERBANG: HALAMAN MASUK -> PILIH MODE (DESKTOP / HP) -> HALAMAN UTAMA
+// ==========================================================================
+const SESSION_KEY = "farmasigap_session";        // sessionStorage: nama & peran (tanpa kata sandi)
+const DISPLAY_MODE_KEY = "farmasigap_display_mode"; // localStorage: mode tampilan yang diingat
+const DEFAULT_USER = { name: "Apt. Mohammad Rifqi Faiz", role: "Apoteker Instalasi Farmasi" };
+
+function storageGet(store, key) {
+  try { return store.getItem(key); } catch (err) { return null; }
+}
+
+function storageSet(store, key, value) {
+  try {
+    if (value === null) store.removeItem(key);
+    else store.setItem(key, value);
+  } catch (err) {
+    // penyimpanan diblokir (mode privat) — aplikasi tetap berjalan tanpa mengingat
+  }
+}
+
+function currentUser() {
+  try {
+    return JSON.parse(storageGet(sessionStorage, SESSION_KEY)) || DEFAULT_USER;
+  } catch (err) {
+    return DEFAULT_USER;
+  }
+}
+
+function userInitials(name) {
+  const words = name.replace(/^apt\.?\s*/i, "").split(/\s+/).filter(Boolean);
+  return ((words[0] ? words[0][0] : "F") + (words[1] ? words[1][0] : "")).toUpperCase();
+}
+
+function applyUserToUI() {
+  const user = currentUser();
+  document.querySelectorAll(".js-user-name").forEach(el => (el.textContent = user.name));
+  document.querySelectorAll(".js-user-role").forEach(el => (el.textContent = user.role));
+  document.querySelectorAll(".js-user-initials").forEach(el => (el.textContent = userInitials(user.name)));
+}
+
+function deviceLooksMobile() {
+  return window.matchMedia("(max-width: 820px), (pointer: coarse) and (max-width: 1024px)").matches;
+}
+
+function setViewportWidth(width) {
+  const meta = document.querySelector('meta[name="viewport"]');
+  if (meta) meta.setAttribute("content", width === "device-width" ? "width=device-width, initial-scale=1.0" : `width=${width}`);
+}
+
+function showGate(id) {
+  document.documentElement.classList.toggle("gate-active", Boolean(id));
+  ["gate-login", "gate-mode"].forEach(gate => (document.getElementById(gate).hidden = gate !== id));
+  if (!id) return;
+  setViewportWidth("device-width");
+  if (id === "gate-mode") {
+    const recommended = deviceLooksMobile() ? "mobile" : "desktop";
+    document.querySelectorAll(".mode-option").forEach(btn => {
+      const isRec = btn.dataset.mode === recommended;
+      btn.classList.toggle("recommended", isRec);
+      btn.querySelector(".mode-recommend").hidden = !isRec;
+    });
+  }
+}
+
+function applyDisplayMode(mode) {
+  const root = document.documentElement;
+  root.classList.toggle("mode-mobile", mode === "mobile");
+  root.classList.toggle("mode-desktop", mode === "desktop");
+  // HP yang memilih Mode Desktop ditampilkan seperti "situs desktop" (lebar 1280px, bisa di-zoom)
+  setViewportWidth(mode === "desktop" && deviceLooksMobile() ? 1280 : "device-width");
+  const btn = document.getElementById("switch-mode-btn");
+  if (btn) btn.textContent = mode === "mobile" ? "🖥 Ganti ke Mode Desktop" : "📱 Ganti ke Mode HP";
+  labelTableCells();
+}
+
+function enterApp(mode) {
+  applyDisplayMode(mode);
+  showGate(null);
+  applyUserToUI();
+  window.scrollTo(0, 0);
+}
+
+function initGate() {
+  applyUserToUI();
+  observeTables();
+  const hasSession = Boolean(storageGet(sessionStorage, SESSION_KEY));
+  const rememberedMode = storageGet(localStorage, DISPLAY_MODE_KEY);
+  if (hasSession && rememberedMode) enterApp(rememberedMode);
+  else showGate(hasSession ? "gate-mode" : "gate-login");
+
+  document.addEventListener("keydown", e => {
+    if (e.key === "Escape") toggleAccountMenu(false);
+  });
+}
+
+function startSession(user) {
+  storageSet(sessionStorage, SESSION_KEY, JSON.stringify(user));
+  applyUserToUI();
+  const rememberedMode = storageGet(localStorage, DISPLAY_MODE_KEY);
+  if (rememberedMode) enterApp(rememberedMode);
+  else showGate("gate-mode");
+}
+
+window.submitLogin = function(event) {
+  event.preventDefault();
+  const name = document.getElementById("login-name").value.trim();
+  const role = document.getElementById("login-role").value;
+  document.getElementById("login-password").value = ""; // prototipe: kata sandi tidak disimpan
+  startSession({ name, role });
+};
+
+window.loginAsGuest = function() {
+  startSession({ name: "Tamu Demo", role: "Pengunjung (Mode Demo)" });
+};
+
+window.togglePasswordVisibility = function() {
+  const input = document.getElementById("login-password");
+  input.type = input.type === "password" ? "text" : "password";
+};
+
+window.chooseDisplayMode = function(mode) {
+  const remember = document.getElementById("remember-mode").checked;
+  storageSet(localStorage, DISPLAY_MODE_KEY, remember ? mode : null);
+  enterApp(mode);
+};
+
+window.switchDisplayMode = function() {
+  const next = document.documentElement.classList.contains("mode-mobile") ? "desktop" : "mobile";
+  if (storageGet(localStorage, DISPLAY_MODE_KEY)) storageSet(localStorage, DISPLAY_MODE_KEY, next);
+  toggleAccountMenu(false);
+  applyDisplayMode(next);
+  window.scrollTo(0, 0);
+  showToast(next === "mobile" ? "Mode HP aktif." : "Mode Desktop aktif.");
+};
+
+window.logout = function() {
+  toggleAccountMenu(false);
+  storageSet(sessionStorage, SESSION_KEY, null);
+  document.documentElement.classList.remove("mode-mobile", "mode-desktop");
+  document.getElementById("login-form").reset();
+  switchMainView("home");
+  showGate("gate-login");
+};
+
+window.toggleAccountMenu = function(force) {
+  const panel = document.getElementById("account-panel");
+  if (!panel) return;
+  const open = typeof force === "boolean" ? force : panel.hidden;
+  panel.hidden = !open;
+  document.getElementById("account-backdrop").hidden = !open;
+  const btn = document.getElementById("account-btn");
+  if (btn) btn.setAttribute("aria-expanded", String(open));
+};
+
+// Di Mode HP, tabel ditampilkan sebagai kartu: tiap sel diberi label dari judul kolomnya
+function labelTableCells() {
+  document.querySelectorAll(".cyber-table").forEach(table => {
+    const heads = [...table.querySelectorAll("thead th")].map(th => th.textContent.trim());
+    table.querySelectorAll("tbody tr").forEach(tr => {
+      [...tr.children].forEach((td, i) => {
+        if (heads[i]) td.dataset.label = heads[i];
+      });
+    });
+  });
+}
+
+function observeTables() {
+  document.querySelectorAll(".cyber-table tbody").forEach(tbody => {
+    new MutationObserver(labelTableCells).observe(tbody, { childList: true });
+  });
+}
 
 // ==========================================================================
 // 1. THEME SWITCHER (Dark Mode & White / Light Mode)
@@ -101,22 +274,13 @@ function applyTheme(theme) {
   document.body.setAttribute("data-theme", theme);
   localStorage.setItem("farmasigap_theme", theme);
 
-  const iconEl = document.getElementById("theme-icon");
   const labelEl = document.getElementById("theme-label");
+  document.querySelectorAll(".theme-icon").forEach(el => (el.innerText = theme === "light" ? "☀️" : "🌙"));
+  if (labelEl) labelEl.innerText = theme === "light" ? "Mode Terang" : "Mode Gelap";
 
-  if (theme === "light") {
-    if (iconEl) iconEl.innerText = "☀️";
-    if (labelEl) labelEl.innerText = "Mode Terang";
-  } else {
-    if (iconEl) iconEl.innerText = "🌙";
-    if (labelEl) labelEl.innerText = "Mode Gelap";
-  }
-
-  // Ganti logo tunggal sesuai tema aktif (1 logo saja di atas)
-  const logoEl = document.getElementById("main-brand-logo");
-  if (logoEl) {
-    logoEl.src = theme === "light" ? "assets/logo-light.png" : "assets/logo-dark.png";
-  }
+  // Ganti logo sesuai tema aktif (navbar & halaman masuk)
+  const logoSrc = theme === "light" ? "assets/logo-light.png" : "assets/logo-dark.png";
+  document.querySelectorAll("#main-brand-logo, .theme-logo").forEach(el => (el.src = logoSrc));
 
   // Ganti basemap peta dasbor (gelap / terang)
   if (mapInstance) {
@@ -557,6 +721,11 @@ window.switchMainView = function(viewKey) {
   const activeNav = document.querySelector(`.nav-item[onclick*="${viewKey}"]`);
   if (activeNav) activeNav.classList.add('active');
 
+  document.querySelectorAll('.mobile-tabbar button[data-view]').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.view === viewKey);
+  });
+  toggleAccountMenu(false);
+
   if (viewKey === 'command-center' && mapInstance) {
     setTimeout(() => {
       mapInstance.resize();
@@ -692,7 +861,7 @@ window.handleRedistributionAction = async function(id, action) {
       body: JSON.stringify({
         suggestion_id: id,
         action: action,
-        pharmacist_name: "Apt. Mohammad Rifqi Faiz"
+        pharmacist_name: currentUser().name
       })
     });
   } catch (e) {
